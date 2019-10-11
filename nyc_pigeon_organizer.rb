@@ -1,62 +1,44 @@
-def assign_gender(m, f)
-  males = {}
-  m.each { |name|
-    males[name] = {:gender => "male"}
-  }
-  
-  females = {}
-  f.each { |name| 
-    females[name] = {:gender => "female"}
-  }
-  
-  males.merge(females)
-end
-
-def assign_colors(new_hash, data)
-  
-  new_hash.each { |name, val|
-    colors = data[:color].keys
-    
-    colors.each { |color|
-      coll_color = []
-      if data[:color][color].include?(name)
-        coll_color.push(color.to_s)
-        new_hash[name] = {
-          :color => coll_color,
-          :gender => val[:gender]
-        }
-      end
-    }
-  }
-
-  new_hash
-end
-
-def assign_lives(new_hash, data)
-  new_hash.each { |name, val|
-    locations = data[:lives].keys
-
-    locations.each { |location|
-      coll_lives = []
-      if data[:lives][location].include?(name)
-        coll_lives.push(location)
-        new_hash[name] = {
-          :color => val[:color],
-          :gender => val[:gender],
-          :lives => coll_lives
-        }
-      end
-    }
-  }
-  
-  new_hash
-end
 
 def nyc_pigeon_organizer(data)
   males = data[:gender][:male]
   females = data[:gender][:female]
-  data_gender = assign_gender(males, females)
-  data_colors = assign_colors(data_gender, data)
-  final_data = assign_lives(data_colors, data)
-  final_data
+  names = males.concat(females)
+
+  new_hash = {}
+  for name in names
+    colors = data[:color].keys
+    genders = data[:gender].keys
+    lives = data[:lives].keys
+    
+    arr_colors = []
+    arr_gender = []
+    arr_lives =[]
+
+    colors.each { |color|
+      if data[:color][color].include?(name)
+        arr_colors.push(color.to_s)
+      end
+    }
+    
+    genders.each { |gender|
+      if data[:gender][gender].include?(name)
+        arr_gender = [gender.to_s]
+      end
+    }
+
+    lives.each { |live|
+      if data[:lives][live].include?(name)
+        arr_lives.push(live.to_s)
+      end
+    }
+
+    new_hash[name] = {
+      :color => arr_colors,
+      :gender => arr_gender,
+      :lives => arr_lives
+    }
+    
+  end
+
+  new_hash
 end
